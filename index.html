@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      h1,
+      h4,
+      p {
+        margin: 0;
+      }
+      body {
+        padding: 0;
+        margin: 0;
+        font-family: Verdana, Geneva, Tahoma, sans-serif;
+      }
+      .news-card {
+        border: 2px solid #f9f7f3;
+      }
+      .news-card .img-wrapper {
+        height: 300px;
+      }
+      .news-card .news-title {
+        color: #00000090;
+        font-size: 24px;
+      }
+      .news-card .author {
+        color: #302626;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- <div id="root">
+      <a href="/" onclick="route(event)">Home</a
+      ><a href="/news" onclick="route(event)">About</a><a href="">Privacy</a>
+      <a href="/news">Pala</a>
+      <div id="main-page"></div>
+    </div> -->
+
+    <header><h1 style="margin-bottom: 30px">Latest News</h1></header>
+
+    <article class="news-card"></article>
+    <main class="main"></main>
+
+    <!-- <script src="/js/script.js"></script> -->
+
+    <!-- <script src="/js/router.js"></script> -->
+
+    <script defer>
+      const baseUrl = "https://61924d4daeab5c0017105f1a.mockapi.io/skaet/v1/";
+      const main = document.querySelector(".main");
+
+      let allNews = [];
+
+      const fetchAllNew = async () => {
+        try {
+          const response = await fetch(`${baseUrl}news`, { method: "GET" });
+          if (!response.ok) throw new Error("Failed to fetch news");
+          return await response.json();
+        } catch (error) {
+          console.error("Error fetching news:", error);
+          return [];
+        }
+      };
+
+      const fetchPostNews = async (data) => {
+        try {
+          const response = await fetch(`${baseUrl}news`, {
+            method: "POST",
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) throw new Error("Failed to posting news");
+          return await response.json();
+        } catch (error) {
+          console.error("Error posting news:", error);
+          return [];
+        }
+      };
+
+      const fetchUpdateNews = async (data, id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}`, {
+            method: "PUT",
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) throw new Error("Failed to updating news");
+          return await response.json();
+        } catch (error) {
+          console.error("Error updating news:", error);
+        }
+      };
+
+      const fetchDeleteNews = async (id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}`, {
+            method: "DELETE",
+          });
+          if (!response.ok) throw new Error("Failed to deleting news");
+          return await response.json();
+        } catch (error) {
+          console.error("Error deleting news:", error);
+          return [];
+        }
+      };
+
+      const fetchNewsImages = async (id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/images`, {
+            method: "GET",
+          });
+          if (!response.ok) throw new Error("Failed to fetch news images");
+          return await response.json();
+        } catch (error) {
+          console.error("Error fetching news images:", error);
+          return [];
+        }
+      };
+
+      const postNewsImages = async (data) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/images`, {
+            method: "POST",
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) throw new Error("Failed to posting news images");
+          return await response.json();
+        } catch (error) {
+          console.error("Error posting news images:", error);
+        }
+      };
+
+      const deleteNewsImagess = async (id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/images/${id}`, {
+            method: "DELETE",
+          });
+          if (!response.ok) throw new Error("Failed to deleting news images");
+          return await response.json();
+        } catch (error) {
+          console.error("Error deleting news images:", error);
+        }
+      };
+
+      const fetchNewsComments = async (id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/comments`, {
+            method: "GET",
+          });
+          if (!response.ok) throw new Error("Failed to fetch news");
+          return await response.json();
+        } catch (error) {
+          console.error("Error fetching news:", error);
+          return [];
+        }
+      };
+
+      const postNewsComments = async (data, id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/comments`, {
+            method: "POST",
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) throw new Error("Failed to posting news comments");
+          return await response.json();
+        } catch (error) {
+          console.error("Error posting news comments:", error);
+        }
+      };
+
+      const updateNewsComments = async (data, id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/comments/${id}`, {
+            method: "PUT",
+            body: JSON.stringify(data),
+          });
+          if (!response.ok) throw new Error("Failed to updating news comments");
+          return await response.json();
+        } catch (error) {
+          console.error("Error updating news comments:", error);
+        }
+      };
+
+      const deleteNewsComments = async (id) => {
+        try {
+          const response = await fetch(`${baseUrl}news/${id}/comments/${id}`, {
+            method: "DELETE",
+          });
+          if (!response.ok) throw new Error("Failed to deleting news comments");
+          return await response.json();
+        } catch (error) {
+          console.error("Error deleting news comments:", error);
+        }
+      };
+
+      const NewsCardComponent = (news) => {
+        const defaultAvatar = "/images/250x250.gif";
+        return `
+          <div class="news-card">
+            <a href="/news/${news.id}" style="text-decoration:none">
+              <div class="img-wrapper">
+            <img src="${
+              news.avatar || defaultAvatar
+            }"  width="400" height="300" />
+            </div>
+            <h4 class="news-title">${news.title}</h4>
+            <p class="author">${news.author}</p>
+            </a>
+          </div>
+        `;
+      };
+
+      const HomePage = async () => {
+        document.title = "Latest News";
+        const allNews = await fetchAllNew();
+        const allNewsHTML = allNews
+          .map((news) => NewsCardComponent(news))
+          .join("");
+        renderPage(allNewsHTML);
+      };
+
+      const NewsPageById = async (id) => {
+        const allNews = await fetchAllNew();
+
+        const singleNews = allNews.find((news) => news.id === id);
+        if (!singleNews) {
+          return Nope(id);
+        }
+
+        singleNews ? renderPage(NewsCardComponent(singleNews)) : Nope(id);
+      };
+
+      const Nope = (id) => {
+        if (id) {
+          renderPage(
+            `<h1>404</h1><h2>Sorry buddy, but I don't think we have a news with id #${id}!</h2>`
+          );
+        } else {
+          renderPage(`<div>
+              <h1>404</h1>
+              <h2>Huh, you're at ${location.pathname}, but you really shouldn't be</h2>
+            </div>`);
+        }
+      };
+
+      const Routes = [
+        {
+          path: "/",
+          component: HomePage,
+        },
+        {
+          path: "/news",
+          component: NewsPageById,
+        },
+      ];
+
+      const Router = (potentialRoute) => {
+        const [_, dynamicRoute, id] = potentialRoute.split("/");
+
+        if (dynamicRoute === "news" && id) {
+          NewsPageById(id);
+        } else {
+          const route = Routes.find((route) => route.path === potentialRoute);
+          route ? route.component() : Nope();
+        }
+      };
+
+      const renderPage = (component) => {
+        main.innerHTML = component;
+      };
+
+      const navigate = (path) => {
+        history.pushState({}, "", path);
+        Router(path);
+      };
+
+      document.body.addEventListener("click", (event) => {
+        if (event.target.tagName === "A" && event.target.dataset.route) {
+          event.preventDefault();
+          navigate(event.target.getAttribute("href"));
+        }
+      });
+
+      Router(location.pathname);
+
+      window.addEventListener("load", () => {
+        window.addEventListener("popstate", () => {
+          Router(location.pathname);
+        });
+      });
+    </script>
+  </body>
+</html>
